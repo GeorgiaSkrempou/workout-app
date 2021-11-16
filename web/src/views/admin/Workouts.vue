@@ -1,22 +1,18 @@
 <template>
   <div>
-    <el-row
-      justify='center'
-    >
-      <el-col :span='2'>
+    <el-row>
+      <el-col>
         <h4>Workouts</h4>
       </el-col>
     </el-row>
-    <el-row
-      justify='center'
-    >
-      <el-col :span='14'>
+    <el-row>
+      <el-col>
         <el-table
           v-if='loading === false'
           :data='workouts.filter((data) => !search || data.title.toLowerCase().includes(search.toLowerCase()))'
-          height='400'
           :row-class-name='tableRowClassName'
           :stripe='true'
+          max-height='400px'
           @current-change='handleCurrentChange'
         >
           <el-table-column
@@ -99,10 +95,10 @@
       const router = useRouter();
 
       loading.value = true;
-      // setTimeout(() => {
-      workouts.value = rawWorkouts;
-      loading.value = false;
-      // }, 5000);
+      setTimeout(() => {
+        workouts.value = rawWorkouts;
+        loading.value = false;
+      }, 500);
 
       const tableRowClassName = ({ row }) => {
         return row.done ? 'success-row' : '';

@@ -81,10 +81,10 @@
         loading.value = true;
         store.dispatch('user/login')
           .then(_ => {
-            router.push({ name: 'admin.dashboard' });
+            router.push({ name: 'admin.workouts' });
           })
           .catch(err => {
-            router.push({ name: 'admin.dashboard' });
+            router.push({ name: 'admin.workouts' });
             showError.value = true;
           })
           .finally(_ => {
