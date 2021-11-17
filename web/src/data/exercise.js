@@ -6,6 +6,7 @@ export const exercises = [
     'value': '12-15',
     'value_type': 'Reps per arm',
     'sets': 4,
+    'weight': 0,
   },
   {
     'id': 11,
@@ -14,6 +15,7 @@ export const exercises = [
     'value': '12-15',
     'value_type': 'Reps',
     'sets': 3,
+    'weight': 0,
   },
   {
     'id': 12,
@@ -22,6 +24,7 @@ export const exercises = [
     'value': '12-15',
     'value_type': 'Reps',
     'sets': 3,
+    'weight': 20,
   },
   {
     'id': 13,
@@ -30,6 +33,7 @@ export const exercises = [
     'value': '12-15',
     'value_type': 'Reps',
     'sets': 3,
+    'weight': 20,
   },
   {
     'id': 14,
@@ -38,6 +42,7 @@ export const exercises = [
     'value': '12-15',
     'value_type': 'Reps',
     'sets': 4,
+    'weight': 20,
   },
   {
     'id': 15,
@@ -46,6 +51,7 @@ export const exercises = [
     'value': '12-15',
     'value_type': 'Reps',
     'sets': 3,
+    'weight': 20,
   },
   {
     'id': 16,
@@ -54,6 +60,7 @@ export const exercises = [
     'value': '12-15',
     'value_type': 'Reps',
     'sets': 3,
+    'weight': 20,
   },
   {
     'id': 17,
@@ -62,6 +69,7 @@ export const exercises = [
     'value': '20-30',
     'value_type': 'Reps',
     'sets': 3,
+    'weight': 20,
   },
   {
     'id': 18,
@@ -70,6 +78,7 @@ export const exercises = [
     'value': '20-30',
     'value_type': 'Reps',
     'sets': 3,
+    'weight': 20,
   },
   {
     'id': 19,
@@ -78,5 +87,6 @@ export const exercises = [
     'value': '20-30',
     'value_type': 'Reps per side',
     'sets': 3,
+    'weight': 20,
   },
 ];
