@@ -79,12 +79,11 @@
 
       const handleLogin = () => {
         loading.value = true;
-        store.dispatch('user/login')
+        store.dispatch('user/login', { email: email.value, password: password.value })
           .then(_ => {
             router.push({ name: 'admin.workouts' });
           })
           .catch(err => {
-            router.push({ name: 'admin.workouts' });
             showError.value = true;
           })
           .finally(_ => {
