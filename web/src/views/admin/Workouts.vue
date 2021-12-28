@@ -16,8 +16,8 @@
           @current-change='handleCurrentChange'
         >
           <el-table-column
-            prop='title'
             label='Day'
+            prop='title'
           />
           <el-table-column
             label='Done'
@@ -39,8 +39,8 @@
             <template #header>
               <el-input
                 v-model='search'
-                size='mini'
                 placeholder='Type to search'
+                size='mini'
               />
             </template>
           </el-table-column>
@@ -70,9 +70,12 @@
     ElTableColumn,
   } from 'element-plus';
 
-  import { ref } from 'vue';
+  import {
+    computed,
+    ref,
+  } from 'vue';
   import { useRouter } from 'vue-router';
-  import { workouts as rawWorkouts } from '../../data/workouts';
+  import { useStore } from 'vuex';
 
   export default {
     name: 'Dashboard',
@@ -89,16 +92,19 @@
       CircleCloseFilled,
     },
     setup() {
-      let workouts = ref([]);
       let loading = ref(false);
 
+      const store = useStore();
       const router = useRouter();
 
+      const workouts = computed(() => store.getters['workout/workouts']);
+      // let loaded = computed(() => store.getters[`workout/workoutsLoaded`]);
+      // if (loaded.value === false) {
       loading.value = true;
-      setTimeout(() => {
-        workouts.value = rawWorkouts;
+      store.dispatch(`workout/getAll`).then(_ => {
         loading.value = false;
-      }, 500);
+      });
+      // }
 
       const tableRowClassName = ({ row }) => {
         return row.done ? 'success-row' : '';

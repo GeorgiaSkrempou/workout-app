@@ -28,15 +28,14 @@ const actions = {
   login: ({ dispatch }, user) => {
     return new Promise((resolve, reject) => {
       axios({
-        url: '/user/login',
+        url: '/api/login',
         method: 'POST',
         data: { ...user },
       })
         .then((response) => {
-          localStorage.setItem('token', response.data.access_token);
+          localStorage.setItem('user', response.data.id);
           http.mount();
 
-          dispatch('getUser');
           resolve(response);
         })
         .catch(error => reject(error.response));

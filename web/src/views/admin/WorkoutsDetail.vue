@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div
+    v-if='loading === false'
+  >
     <el-row
       align='middle'
     >
@@ -24,7 +26,6 @@
         :xl='6'
       >
         <h4 style='display: inline-block'>
-          {{ workout.title }}
         </h4>
       </el-col>
     </el-row>
@@ -103,11 +104,12 @@
     ElTableColumn,
   } from 'element-plus';
 
-  import { ref } from 'vue';
+  import {
+    computed,
+    ref,
+  } from 'vue';
   import { useRoute } from 'vue-router';
-
-  import { exercises } from '../../data/exercise';
-  import { workouts } from '../../data/workouts';
+  import { useStore } from 'vuex';
 
   export default {
     components: {
@@ -129,6 +131,8 @@
       let weight = ref('');
       let selectedExercise = ref({});
 
+      const store = useStore();
+
       const route = useRoute();
       const showWeightModal = (exercise) => {
         selectedExercise.value = exercise;
@@ -142,9 +146,16 @@
         weightModalVisible.value = false;
       };
 
+      const exercises = computed(() => store.getters['workout/workout']);
+      let loading = ref(false);
+      loading.value = true;
+      store.dispatch('workout/getWorkoutDay', route.params.id)
+        .then(_ => {
+          loading.value = false;
+        });
+
       return {
-        workout: workouts.find(el => el.id === parseInt(route.params.id)),
-        exercises: exercises,
+        exercises,
         weightModalVisible,
         weight,
         selectedExercise,
@@ -153,6 +164,8 @@
 
         showWeightModal,
         saveWeight,
+
+        loading,
       };
     },
   };
