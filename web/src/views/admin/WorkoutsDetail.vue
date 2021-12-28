@@ -4,9 +4,9 @@
       align='middle'
     >
       <el-col
-        :xl='8'
         :sm='6'
         :span='8'
+        :xl='8'
       >
         <el-button
           size='medium'
@@ -19,9 +19,9 @@
         </el-button>
       </el-col>
       <el-col
-        :xl='6'
         :sm='12'
         :span='16'
+        :xl='6'
       >
         <h4 style='display: inline-block'>
           {{ workout.title }}
@@ -55,13 +55,13 @@
     <el-dialog
       v-model='weightModalVisible'
       :title='`Update weight for ${selectedExercise.name}`'
-      width='25%'
       destroy-on-close
+      width='25%'
     >
       <el-form>
         <el-form-item
-          label='Weight'
-          :label-width='formLabelWidth'>
+          :label-width='formLabelWidth'
+          label='Weight'>
           <el-input
             v-model='weight'
             autocomplete='off'
@@ -93,18 +93,19 @@
   import {
     ElButton,
     ElCol,
-    ElIcon,
-    ElRow,
-    ElTable,
-    ElTableColumn,
     ElDialog,
     ElForm,
     ElFormItem,
+    ElIcon,
     ElInput,
+    ElRow,
+    ElTable,
+    ElTableColumn,
   } from 'element-plus';
-  import { ref } from 'vue';
 
+  import { ref } from 'vue';
   import { useRoute } from 'vue-router';
+
   import { exercises } from '../../data/exercise';
   import { workouts } from '../../data/workouts';
 
@@ -127,7 +128,7 @@
       let weightModalVisible = ref(false);
       let weight = ref('');
       let selectedExercise = ref({});
-      
+
       const route = useRoute();
       const showWeightModal = (exercise) => {
         selectedExercise.value = exercise;
