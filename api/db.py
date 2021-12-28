@@ -29,6 +29,7 @@ def login():
     email = user_info['email']
     password = user_info['password']
 
+    # TODO: refactor this into its own function. Probably also in a different file.
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = dict_factory
     cur = conn.cursor()
@@ -75,13 +76,13 @@ def user_workouts(user_id):
 def daily_workouts(user_id, day_id):
     query = "SELECT exercises.name, workout_exercises.value, workout_exercises.value_type, workout_exercises.sets FROM workout_exercises, exercises, user_workouts WHERE workout_exercises.exercise_id = exercises.id AND workout_exercises.workout_id = user_workouts.workout_id AND workout_exercises.workout_id = ? AND user_id = ?;"
 
-
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = dict_factory
     cur = conn.cursor()
 
     results = cur.execute(query, [day_id,user_id]).fetchall()
 
+    # TODO: return workout name in addition to its exercises
     return jsonify(results)
 
 app.run()
