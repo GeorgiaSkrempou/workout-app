@@ -92,8 +92,6 @@
       const router = useRouter();
 
       const workouts = computed(() => store.getters['workout/workouts']);
-      // let loaded = computed(() => store.getters[`workout/workoutsLoaded`]);
-      // if (loaded.value === false) {
       onMounted(() => {
         loading.value = true;
         store.dispatch(`workout/getAll`).then(_ => {
