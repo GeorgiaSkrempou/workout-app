@@ -14,6 +14,11 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
+def db_connection():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = dict_factory
+    cur = conn.cursor()
+    return cur
 
 @app.route('/', methods=['GET'])
 def home():
@@ -29,10 +34,8 @@ def login():
     email = user_info['email']
     password = user_info['password']
 
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = dict_factory
-    cur = conn.cursor()
-    
+    cur = db_connection()
+
     # return the first entry from the database that matches the supplied email
     db_user = cur.execute('SELECT id, password FROM users WHERE email = :email', {"email": email}).fetchone()
 
@@ -48,24 +51,20 @@ def login():
 
     return "", 400
 
-
 @app.route('/api/workouts/all', methods=['GET'])
 def api_all():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = dict_factory
-    cur = conn.cursor()
+
+    cur = db_connection()
+
     all_workouts = cur.execute('SELECT * FROM workouts;').fetchall()
 
     return jsonify(all_workouts)
-
 
 @app.route('/api/user/workouts/<user_id>', methods=['GET'])
 def user_workouts(user_id):
     query = "SELECT workouts.title, user_workouts.done, workouts.id FROM workouts, user_workouts  WHERE user_workouts.workout_id = workouts.id AND user_id = ?;"
 
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = dict_factory
-    cur = conn.cursor()
+    cur = db_connection()
 
     results = cur.execute(query, user_id).fetchall()
 
@@ -73,15 +72,25 @@ def user_workouts(user_id):
 
 @app.route('/api/user/workouts/<user_id>/day<day_id>', methods=['GET'])
 def daily_workouts(user_id, day_id):
-    query = "SELECT exercises.name, workout_exercises.value, workout_exercises.value_type, workout_exercises.sets FROM workout_exercises, exercises, user_workouts WHERE workout_exercises.exercise_id = exercises.id AND workout_exercises.workout_id = user_workouts.workout_id AND workout_exercises.workout_id = ? AND user_id = ?;"
+    query = "SELECT workouts.title, exercises.name, workout_exercises.value, workout_exercises.value_type, workout_exercises.sets FROM workouts, workout_exercises, exercises, user_workouts WHERE workout_exercises.exercise_id = exercises.id AND workout_exercises.workout_id = user_workouts.workout_id AND workout_exercises.workout_id = workouts.id AND workout_exercises.workout_id = ? AND user_id = ?;"
 
-
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = dict_factory
-    cur = conn.cursor()
+    cur = db_connection()
 
     results = cur.execute(query, [day_id,user_id]).fetchall()
+    workout_details = {}
+    workout_details["title"] = results[0]["title"]
+    workout_details["exercises"] = []
 
-    return jsonify(results)
+    for exercise in results:
+        workout_details["exercises"].append(
+            {
+                "name": exercise["name"],
+                "value": exercise["value"],
+                "value_type": exercise["value_type"],
+                "sets": exercise["sets"]
+            }
+        )
+
+    return jsonify(workout_details)
 
 app.run()
