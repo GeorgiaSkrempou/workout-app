@@ -35,7 +35,7 @@ def login():
     password = user_info['password']
 
     cur = db_connection()
-
+   
     # return the first entry from the database that matches the supplied email
     db_user = cur.execute('SELECT id, password FROM users WHERE email = :email', {"email": email}).fetchone()
 
@@ -72,6 +72,7 @@ def user_workouts(user_id):
 
 @app.route('/api/user/workouts/<user_id>/day<day_id>', methods=['GET'])
 def daily_workouts(user_id, day_id):
+  
     query = "SELECT workouts.title, exercises.name, workout_exercises.value, workout_exercises.value_type, workout_exercises.sets FROM workouts, workout_exercises, exercises, user_workouts WHERE workout_exercises.exercise_id = exercises.id AND workout_exercises.workout_id = user_workouts.workout_id AND workout_exercises.workout_id = workouts.id AND workout_exercises.workout_id = ? AND user_id = ?;"
 
     cur = db_connection()
@@ -94,3 +95,4 @@ def daily_workouts(user_id, day_id):
     return jsonify(workout_details)
 
 app.run()
+
