@@ -3,7 +3,7 @@ import axios from 'axios';
 const defaultWorkoutState = () => {
   return {
     workouts: [],
-    workout: {},
+    workout: [],
     workoutLoaded: false,
     workoutsLoaded: false,
   };
