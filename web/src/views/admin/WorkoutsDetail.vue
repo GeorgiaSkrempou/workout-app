@@ -1,7 +1,5 @@
 <template>
-  <div
-    v-if='loading === false'
-  >
+  <div>
     <el-row
       align='middle'
     >
@@ -32,6 +30,7 @@
     <el-row>
       <el-col>
         <el-table
+          v-loading='loading'
           :data='exercises'
           @current-change='showWeightModal'
         >
@@ -106,6 +105,7 @@
 
   import {
     computed,
+    onMounted,
     ref,
   } from 'vue';
   import { useRoute } from 'vue-router';
@@ -148,11 +148,13 @@
 
       const exercises = computed(() => store.getters['workout/workout']);
       let loading = ref(false);
-      loading.value = true;
-      store.dispatch('workout/getWorkoutDay', route.params.id)
-        .then(_ => {
-          loading.value = false;
-        });
+      onMounted(() => {
+        loading.value = true;
+        store.dispatch('workout/getWorkoutDay', route.params.id)
+          .then(_ => {
+            loading.value = false;
+          });
+      });
 
       return {
         exercises,
