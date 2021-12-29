@@ -24,6 +24,7 @@
         :xl='6'
       >
         <h4 style='display: inline-block'>
+          {{ workout.title }}
         </h4>
       </el-col>
     </el-row>
@@ -31,7 +32,7 @@
       <el-col>
         <el-table
           v-loading='loading'
-          :data='exercises'
+          :data='workout.exercises'
           @current-change='showWeightModal'
         >
           <el-table-column label='Exercise'>
@@ -146,7 +147,7 @@
         weightModalVisible.value = false;
       };
 
-      const exercises = computed(() => store.getters['workout/workout']);
+      const workout = computed(() => store.getters['workout/workout']);
       let loading = ref(false);
       onMounted(() => {
         loading.value = true;
@@ -157,7 +158,7 @@
       });
 
       return {
-        exercises,
+        workout,
         weightModalVisible,
         weight,
         selectedExercise,
