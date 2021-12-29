@@ -8,7 +8,7 @@
     <el-row>
       <el-col>
         <el-table
-          v-if='loading === false'
+          v-loading='loading'
           :data='workouts.filter((data) => !search || data.title.toLowerCase().includes(search.toLowerCase()))'
           :row-class-name='tableRowClassName'
           :stripe='true'
@@ -45,11 +45,6 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-skeleton
-          v-else
-          :rows='5'
-          animated
-        />
       </el-col>
     </el-row>
   </div>
@@ -65,13 +60,13 @@
     ElIcon,
     ElInput,
     ElRow,
-    ElSkeleton,
     ElTable,
     ElTableColumn,
   } from 'element-plus';
 
   import {
     computed,
+    onMounted,
     ref,
   } from 'vue';
   import { useRouter } from 'vue-router';
@@ -86,7 +81,6 @@
       ElInput,
       ElCol,
       ElIcon,
-      ElSkeleton,
 
       CircleCheckFilled,
       CircleCloseFilled,
@@ -100,14 +94,15 @@
       const workouts = computed(() => store.getters['workout/workouts']);
       // let loaded = computed(() => store.getters[`workout/workoutsLoaded`]);
       // if (loaded.value === false) {
-      loading.value = true;
-      store.dispatch(`workout/getAll`).then(_ => {
-        loading.value = false;
+      onMounted(() => {
+        loading.value = true;
+        store.dispatch(`workout/getAll`).then(_ => {
+          loading.value = false;
+        });
       });
-      // }
 
       const tableRowClassName = ({ row }) => {
-        return row.done ? 'success-row' : '';
+        return row.done === 1 ? 'success-row' : '';
       };
 
       const handleCurrentChange = (workout) => {
