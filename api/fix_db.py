@@ -8,7 +8,7 @@ def dict_factory(cursor, row):
     return d
 
 
-conn = sqlite3.connect('data/workouts.db')
+conn = sqlite3.connect('api/data/workouts.db')
 conn.row_factory = dict_factory
 cur = conn.cursor()
 
