@@ -73,7 +73,15 @@ def user_workouts(user_id):
 @app.route('/api/user/workouts/<user_id>/day<day_id>', methods=['GET'])
 def daily_workouts(user_id, day_id):
   
-    query = "SELECT workouts.title, exercises.name, workout_exercises.value, workout_exercises.value_type, workout_exercises.sets FROM workouts, workout_exercises, exercises, user_workouts WHERE workout_exercises.exercise_id = exercises.id AND workout_exercises.workout_id = user_workouts.workout_id AND workout_exercises.workout_id = workouts.id AND workout_exercises.workout_id = ? AND user_id = ?;"
+    query = """
+    SELECT workouts.title, exercises.name, workout_exercises.value, workout_exercises.value_type, workout_exercises.sets, user_workout_exercises.weight, exercises.video
+    FROM user_workout_exercises, workouts, workout_exercises, exercises
+    WHERE workout_exercises.exercise_id = exercises.id
+    AND user_workout_exercises.workout_exercise_id = workout_exercises.id 
+    AND workout_exercises.workout_id = workouts.id 
+    AND workout_exercises.workout_id = ? 
+    AND user_workout_exercises.user_id = ?;
+    """
 
     cur = db_connection()
 
@@ -88,7 +96,9 @@ def daily_workouts(user_id, day_id):
                 "name": exercise["name"],
                 "value": exercise["value"],
                 "value_type": exercise["value_type"],
-                "sets": exercise["sets"]
+                "sets": exercise["sets"],
+                "weight": exercise["weight"], 
+                "video": exercise["video"]
             }
         )
 
