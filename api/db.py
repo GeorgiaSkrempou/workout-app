@@ -18,7 +18,7 @@ def db_connection():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = dict_factory
     cur = conn.cursor()
-    return cur
+    return cur, conn
 
 @app.route('/', methods=['GET'])
 def home():
@@ -34,7 +34,7 @@ def login():
     email = user_info['email']
     password = user_info['password']
 
-    cur = db_connection()
+    (cur, _) = db_connection()
    
     # return the first entry from the database that matches the supplied email
     db_user = cur.execute('SELECT id, password FROM users WHERE email = :email', {"email": email}).fetchone()
@@ -54,7 +54,7 @@ def login():
 @app.route('/api/workouts/all', methods=['GET'])
 def api_all():
 
-    cur = db_connection()
+    (cur, _) = db_connection()
 
     all_workouts = cur.execute('SELECT * FROM workouts;').fetchall()
 
@@ -64,7 +64,7 @@ def api_all():
 def user_workouts(user_id):
     query = "SELECT workouts.title, user_workouts.done, workouts.id FROM workouts, user_workouts  WHERE user_workouts.workout_id = workouts.id AND user_id = ?;"
 
-    cur = db_connection()
+    (cur, _) = db_connection()
 
     results = cur.execute(query, user_id).fetchall()
 
@@ -83,7 +83,7 @@ def daily_workouts(user_id, day_id):
     AND user_workout_exercises.user_id = ?;
     """
 
-    cur = db_connection()
+    (cur, _) = db_connection()
 
     results = cur.execute(query, [day_id,user_id]).fetchall()
     workout_details = {}
@@ -103,6 +103,39 @@ def daily_workouts(user_id, day_id):
         )
 
     return jsonify(workout_details)
+
+@app.route('/api/user/workouts/<user_id>/day<day_id>/exercise<exercise_id>', methods=['POST'])
+def weight_update(user_id, day_id, exercise_id):
+
+    weight_info = request.json
+    if not weight_info:
+        return "", 400
+
+    user_weight = weight_info['weight']
+
+    query = """
+    select id from user_workout_exercises where user_id = ?
+    and workout_exercise_id = (select id from workout_exercises 
+    where workout_id = ? and exercise_id = ?);
+    """
+
+    (cur, conn) = db_connection()
+
+
+    result = cur.execute(query, [user_id, day_id, exercise_id]).fetchone()
+    user_workout_exercise_id = result["id"]
+
+    query = """
+    update user_workout_exercises set weight = :db_weight where id = :db_id;
+    """
+
+    print (user_workout_exercise_id)
+    cur.execute(query, {"db_weight": user_weight, "db_id": user_workout_exercise_id})
+    
+    conn.commit()
+
+    return ""
+
 
 app.run()
 
