@@ -113,6 +113,14 @@ def weight_update(user_id, day_id, exercise_id):
 
     user_weight = weight_info['weight']
 
+    if type(user_weight) != float:        
+        try:
+            user_weight = float(user_weight)         
+        except ValueError:
+            error_message={"message": "Please insert a number"}
+            return jsonify(error_message), 400
+
+
     query = """
     select id from user_workout_exercises where user_id = ?
     and workout_exercise_id = (select id from workout_exercises 
@@ -129,7 +137,7 @@ def weight_update(user_id, day_id, exercise_id):
     update user_workout_exercises set weight = :db_weight where id = :db_id;
     """
 
-    print (user_workout_exercise_id)
+    #print (user_workout_exercise_id)
     cur.execute(query, {"db_weight": user_weight, "db_id": user_workout_exercise_id})
     
     conn.commit()
