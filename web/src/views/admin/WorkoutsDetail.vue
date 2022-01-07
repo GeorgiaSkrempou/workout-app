@@ -33,14 +33,17 @@
         <el-table
           v-loading='loading'
           :data='workout.exercises'
-          @current-change='showWeightModal'
         >
-          <el-table-column label='Exercise'>
+          <el-table-column
+            label='Exercise'
+          >
             <template #default='{ row }'>
               {{ row.name }}
             </template>
           </el-table-column>
-          <el-table-column label='Info'>
+          <el-table-column
+            label='Info'
+          >
             <template #default='{ row }'>
               {{ row.sets }} sets x {{ row.value }} {{ row.value_type }}
             </template>
@@ -48,7 +51,21 @@
           <el-table-column
             label='Weight'
             prop='weight'
+            min-width='100'
+            width='100'
           />
+          <el-table-column
+            align='right'
+          >
+            <template #default='{ row }'>
+              <el-button
+                size='small'
+                @click='showWeightModal(row)'
+              >
+                Update weight
+              </el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -67,6 +84,7 @@
             v-model='weight'
             autocomplete='off'
             autofocus
+            type='number'
           />
         </el-form-item>
       </el-form>
@@ -78,6 +96,7 @@
             Cancel
           </el-button>
           <el-button
+            v-loading='savingWeight'
             type='primary'
             @click='saveWeight(selectedExercise)'
           >
@@ -129,6 +148,7 @@
     },
     setup() {
       let weightModalVisible = ref(false);
+      let savingWeight = ref(false);
       let weight = ref('');
       let selectedExercise = ref({});
 
@@ -143,8 +163,18 @@
       };
 
       const saveWeight = (exercise) => {
+        savingWeight.value = true;
         exercise.weight = weight.value;
-        weightModalVisible.value = false;
+
+        store.dispatch('workout/updateWorkoutWeight', {
+          day: parseInt(route.params.id),
+          exercise: exercise.id,
+          weight: exercise.weight,
+        })
+          .then(() => {
+            weightModalVisible.value = false;
+            savingWeight.value = false;
+          });
       };
 
       const workout = computed(() => store.getters['workout/workout']);
@@ -167,6 +197,7 @@
 
         showWeightModal,
         saveWeight,
+        savingWeight,
 
         loading,
       };
