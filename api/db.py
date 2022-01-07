@@ -138,12 +138,34 @@ def weight_update(user_id, day_id, exercise_id):
     update user_workout_exercises set weight = :db_weight where id = :db_id;
     """
 
-    #print (user_workout_exercise_id)
     cur.execute(query, {"db_weight": user_weight, "db_id": user_workout_exercise_id})
     
     conn.commit()
 
     return ""
+
+@app.route('/api/user/workouts/<user_id>/<workout_id>', methods=['POST'])
+def done_update(user_id, workout_id):
+    done_info = request.json
+    done_value = done_info['done']
+
+    query = """
+    select id from user_workouts where user_id = ?
+    and workout_id = ?;
+    """
+    (cur, conn) = db_connection()
+
+    user_workout_id = cur.execute(query, [user_id, workout_id]).fetchone()["id"]
+
+    query = """
+    update user_workouts 
+    set done = :user_done_value where id = :workout_id_value;
+    """
+    cur.execute(query, {"user_done_value": done_value, "workout_id_value": user_workout_id})
+
+    conn.commit()
+
+    return""
 
 
 app.run()
