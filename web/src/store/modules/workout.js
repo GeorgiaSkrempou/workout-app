@@ -64,6 +64,21 @@ const actions = {
         .catch(error => reject(error.response.data));
     });
   },
+  updateWorkoutWeight: ({ commit }, { day, exercise, weight }) => {
+    return new Promise((resolve, reject) => {
+      axios({
+        url: `/api/user/workouts/${localStorage.getItem('user')}/day${day}/exercise${exercise}`,
+        method: 'POST',
+        data: {
+          weight: weight,
+        },
+      })
+        .then((response) => {
+          resolve(response);
+        })
+        .catch(error => reject(error.response.data));
+    });
+  },
 };
 
 export default {
