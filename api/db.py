@@ -6,7 +6,7 @@ import bcrypt
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
-DB_PATH='api/data/workouts.db'
+DB_PATH='data/workouts.db'
 
 def dict_factory(cursor, row):
     d = {}
@@ -74,7 +74,7 @@ def user_workouts(user_id):
 def daily_workouts(user_id, day_id):
   
     query = """
-    SELECT workouts.title, exercises.name, workout_exercises.value, workout_exercises.value_type, workout_exercises.sets, user_workout_exercises.weight, exercises.video
+    SELECT workouts.title, exercises.name, workout_exercises.value, workout_exercises.value_type, workout_exercises.sets, user_workout_exercises.weight, exercises.video, exercises.id
     FROM user_workout_exercises, workouts, workout_exercises, exercises
     WHERE workout_exercises.exercise_id = exercises.id
     AND user_workout_exercises.workout_exercise_id = workout_exercises.id 
@@ -98,7 +98,8 @@ def daily_workouts(user_id, day_id):
                 "value_type": exercise["value_type"],
                 "sets": exercise["sets"],
                 "weight": exercise["weight"], 
-                "video": exercise["video"]
+                "video": exercise["video"],
+                "id": exercise["id"]
             }
         )
 
