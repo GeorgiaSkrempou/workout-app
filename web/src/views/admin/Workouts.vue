@@ -11,8 +11,7 @@
           v-loading='loading'
           :data='workouts.filter((data) => !search || data.title.toLowerCase().includes(search.toLowerCase()))'
           :row-class-name='tableRowClassName'
-          :stripe='true'
-          max-height='400px'
+          max-height='600px'
           @current-change='handleCurrentChange'
         >
           <el-table-column
@@ -23,16 +22,13 @@
             label='Done'
           >
             <template #default='{ row }'>
-              <el-icon
-                v-if='row.done'
+              <el-button
+                :loading='row.loading'
+                size='small'
+                @click='$evt => handleWorkoutDone($evt, row, !row.done)'
               >
-                <circle-check-filled />
-              </el-icon>
-              <el-icon
-                v-else
-              >
-                <circle-close-filled />
-              </el-icon>
+                Mark as <span v-if='row.done'>not done</span><span v-else>done</span>
+              </el-button>
             </template>
           </el-table-column>
           <el-table-column align='right'>
@@ -52,12 +48,8 @@
 
 <script>
   import {
-    CircleCheckFilled,
-    CircleCloseFilled,
-  } from '@element-plus/icons';
-  import {
+    ElButton,
     ElCol,
-    ElIcon,
     ElInput,
     ElRow,
     ElTable,
@@ -80,10 +72,7 @@
       ElTableColumn,
       ElInput,
       ElCol,
-      ElIcon,
-
-      CircleCheckFilled,
-      CircleCloseFilled,
+      ElButton,
     },
     setup() {
       let loading = ref(false);
@@ -100,7 +89,7 @@
       });
 
       const tableRowClassName = ({ row }) => {
-        return row.done === 1 ? 'success-row' : '';
+        return row.done ? 'primary-row' : '';
       };
 
       const handleCurrentChange = (workout) => {
@@ -112,6 +101,16 @@
         });
       };
 
+      const handleWorkoutDone = ($evt, workout, done) => {
+        $evt.stopPropagation();
+        workout.loading = true;
+        store.dispatch('workout/setWorkoutDone', { workout: workout.id, done: done })
+          .then(_ => {
+            workout.done = done;
+            workout.loading = false;
+          });
+      };
+
       return {
         workouts: workouts,
         loading: loading,
@@ -119,13 +118,20 @@
 
         tableRowClassName,
         handleCurrentChange,
+        handleWorkoutDone,
       };
     },
   };
 </script>
 
 <style>
-.el-table .success-row {
-  --el-table-tr-background-color: var(--el-color-success-lighter);
+.el-table .primary-row {
+  --el-table-tr-background-color: var(--el-color-primary-light-7);
 }
+
+.el-table__row {
+  cursor: pointer;
+  border-radius: 25px;
+}
+
 </style>

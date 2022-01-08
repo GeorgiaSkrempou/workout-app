@@ -79,6 +79,21 @@ const actions = {
         .catch(error => reject(error.response.data));
     });
   },
+  setWorkoutDone: ({ commit }, { workout, done }) => {
+    return new Promise((resolve, reject) => {
+      axios({
+        url: `/api/user/workouts/${localStorage.getItem('user')}/${workout}`,
+        method: 'POST',
+        data: {
+          done: done,
+        },
+      })
+        .then((response) => {
+          resolve(response);
+        })
+        .catch(error => reject(error.response.data));
+    });
+  },
 };
 
 export default {
