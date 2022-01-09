@@ -133,5 +133,7 @@
   cursor: pointer;
   border-radius: 25px;
 }
-
+th {
+  color: black;
+}
 </style>
