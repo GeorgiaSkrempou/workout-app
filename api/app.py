@@ -49,7 +49,7 @@ def login():
     # we return the user. otherwise, we return error.
     
     if bcrypt.checkpw(str.encode(password), str.encode(db_user['password'])):
-        return {"id": db_user['id']}
+        return jsonify({"id": db_user['id']})
 
     return "", 400
 
