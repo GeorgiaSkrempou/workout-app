@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+ssh pi -t "cd /var/www/html/workouts-app && git pull && rm -rf web/dist/*"
+cd web && yarn build
+scp -r ./dist/* pi:/var/www/html/workouts-app/web/dist

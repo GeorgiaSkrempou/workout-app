@@ -12,6 +12,7 @@ const http = {
       if (token !== null) {
         config.headers.common['Authorization'] = `Bearer ${token}`;
       }
+      config.baseURL = baseURL;
 
       return config;
     });
