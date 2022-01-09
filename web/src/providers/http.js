@@ -1,4 +1,5 @@
 import { router } from '@/router';
+import { baseURL } from '../config/config';
 import axios from 'axios';
 
 const http = {
