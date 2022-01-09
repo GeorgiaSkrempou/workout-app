@@ -34,7 +34,6 @@ const actions = {
       })
         .then((response) => {
           localStorage.setItem('user', response.data.id);
-          http.mount();
 
           resolve(response);
         })
