@@ -30,43 +30,82 @@
     </el-row>
     <el-row>
       <el-col>
-        <el-table
-          v-loading='loading'
-          :data='workout.exercises'
+        <el-scrollbar
+          :height='tableHeight'
+          :native='false'
         >
-          <el-table-column
-            label='Exercise'
+          <el-table
+            v-loading='loading'
+            :data='workout.exercises'
           >
-            <template #default='{ row }'>
-              {{ row.name }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            label='Info'
-          >
-            <template #default='{ row }'>
-              {{ row.sets }} sets x {{ row.value }} {{ row.value_type }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            label='Weight'
-            prop='weight'
-            min-width='100'
-            width='100'
-          />
-          <el-table-column
-            align='right'
-          >
-            <template #default='{ row }'>
-              <el-button
-                size='small'
-                @click='showWeightModal(row)'
-              >
-                Update weight
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+            <el-table-column
+              v-if='isMobile'
+              type='expand'
+            >
+              <template #default='{ row }'>
+                <el-descriptions
+                  class='p-3'
+                  title='Exercise info'
+                  :column='1'
+                  border
+                >
+                  <el-descriptions-item>
+                    <template #label>
+                      Reps
+                    </template>
+                    {{ row.value }} {{ row.value_type }}
+                  </el-descriptions-item>
+                  <el-descriptions-item>
+                    <template #label>
+                      Sets
+                    </template>
+                    {{ row.sets }}
+                  </el-descriptions-item>
+                  <el-descriptions-item>
+                    <template #label>
+                      Weight
+                    </template>
+                    {{ row.weight }}
+                  </el-descriptions-item>
+                </el-descriptions>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label='Exercise'
+            >
+              <template #default='{ row }'>
+                {{ row.name }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              v-if='isMobile === false'
+              label='Info'
+            >
+              <template #default='{ row }'>
+                {{ row.sets }} sets x {{ row.value }} {{ row.value_type }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              v-if='isMobile === false'
+              label='Weight'
+              min-width='100'
+              prop='weight'
+              width='100'
+            />
+            <el-table-column
+              align='right'
+            >
+              <template #default='{ row }'>
+                <el-button
+                  size='small'
+                  @click='showWeightModal(row)'
+                >
+                  Update weight
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-scrollbar>
       </el-col>
     </el-row>
 
@@ -118,8 +157,11 @@
     ElIcon,
     ElInput,
     ElRow,
+    ElScrollbar,
     ElTable,
     ElTableColumn,
+    ElDescriptions,
+    ElDescriptionsItem,
   } from 'element-plus';
 
   import {
@@ -142,6 +184,9 @@
       ElForm,
       ElFormItem,
       ElInput,
+      ElScrollbar,
+      ElDescriptions,
+      ElDescriptionsItem,
 
       ArrowLeftBold,
     },
@@ -185,6 +230,23 @@
             loading.value = false;
           });
       });
+      const tableHeight = computed(() => {
+        let body = document.body;
+        let html = document.documentElement;
+
+        let height = Math.max(
+          body.scrollHeight, body.offsetHeight,
+          html.clientHeight, html.scrollHeight, html.offsetHeight,
+        );
+
+        return `${height - 230}px`;
+      });
+      const isMobile = computed(() => {
+        let windowWidth = window.screen.width < window.outerWidth ?
+          window.screen.width : window.outerWidth;
+
+        return windowWidth < 768;
+      });
 
       return {
         workout,
@@ -197,6 +259,8 @@
         showWeightModal,
         saveWeight,
         savingWeight,
+        tableHeight,
+        isMobile,
 
         loading,
       };

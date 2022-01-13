@@ -1,19 +1,36 @@
 <template>
   <div>
-    <el-row>
-      <el-col>
+    <el-row
+      justify='space-between'
+      align='middle'
+    >
+      <el-col
+        :span='5'
+        :xs='{span: 3}'
+      >
         <h4>Workouts</h4>
+      </el-col>
+      <el-col
+        :span='10'
+        :xs='{span: 15}'
+      >
+        <el-input
+          v-model='search'
+          placeholder='Type to search'
+          size='mini'
+        />
       </el-col>
     </el-row>
     <el-row>
       <el-col>
         <el-scrollbar
           :height='tableHeight'
+          :native='false'
         >
           <el-table
             v-loading='loading'
             :data='workouts.filter((data) => !search || data.title.toLowerCase().includes(search.toLowerCase()))'
-            :max-height='tableHeight'
+            :row-class-name='tableRowClassName'
             @current-change='handleCurrentChange'
           >
             <el-table-column
@@ -31,15 +48,6 @@
                 >
                   Mark as <span v-if='row.done'>not done</span><span v-else>done</span>
                 </el-button>
-              </template>
-            </el-table-column>
-            <el-table-column align='right'>
-              <template #header>
-                <el-input
-                  v-model='search'
-                  placeholder='Type to search'
-                  size='mini'
-                />
               </template>
             </el-table-column>
           </el-table>

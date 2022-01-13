@@ -1,4 +1,5 @@
 import 'element-plus/dist/index.css';
+
 import { createApp } from 'vue';
 import App from './App.vue';
 import './assets/scss/app.scss';
@@ -8,6 +9,7 @@ import { store } from './store';
 
 import { ElLoading } from 'element-plus';
 import { ElInfiniteScroll } from 'element-plus';
+
 
 http.mount();
 
