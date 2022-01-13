@@ -74,7 +74,6 @@
       v-model='weightModalVisible'
       :title='`Update weight for ${selectedExercise.name}`'
       destroy-on-close
-      width='25%'
     >
       <el-form>
         <el-form-item

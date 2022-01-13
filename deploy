@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-ssh pi -t "cd /var/www/html/workouts-app && git pull && rm -rf web/dist/* && systemctl restart workout"
+ssh pi -t "cd /var/www/html/workouts-app && git pull && rm -rf web/dist/* && sudo /home/pi/restart_service.sh"
 cd web && yarn build
 scp -r ./dist/* pi:/var/www/html/workouts-app/web/dist

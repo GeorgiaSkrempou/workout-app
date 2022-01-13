@@ -7,40 +7,43 @@
     </el-row>
     <el-row>
       <el-col>
-        <el-table
-          v-loading='loading'
-          :data='workouts.filter((data) => !search || data.title.toLowerCase().includes(search.toLowerCase()))'
-          :row-class-name='tableRowClassName'
-          max-height='600px'
-          @current-change='handleCurrentChange'
+        <el-scrollbar
+          :height='tableHeight'
         >
-          <el-table-column
-            label='Day'
-            prop='title'
-          />
-          <el-table-column
-            label='Done'
+          <el-table
+            v-loading='loading'
+            :data='workouts.filter((data) => !search || data.title.toLowerCase().includes(search.toLowerCase()))'
+            :max-height='tableHeight'
+            @current-change='handleCurrentChange'
           >
-            <template #default='{ row }'>
-              <el-button
-                :loading='row.loading'
-                size='small'
-                @click='$evt => handleWorkoutDone($evt, row, !row.done)'
-              >
-                Mark as <span v-if='row.done'>not done</span><span v-else>done</span>
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column align='right'>
-            <template #header>
-              <el-input
-                v-model='search'
-                placeholder='Type to search'
-                size='mini'
-              />
-            </template>
-          </el-table-column>
-        </el-table>
+            <el-table-column
+              label='Day'
+              prop='title'
+            />
+            <el-table-column
+              label='Done'
+            >
+              <template #default='{ row }'>
+                <el-button
+                  :loading='row.loading'
+                  size='small'
+                  @click='$evt => handleWorkoutDone($evt, row, !row.done)'
+                >
+                  Mark as <span v-if='row.done'>not done</span><span v-else>done</span>
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column align='right'>
+              <template #header>
+                <el-input
+                  v-model='search'
+                  placeholder='Type to search'
+                  size='mini'
+                />
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-scrollbar>
       </el-col>
     </el-row>
   </div>
@@ -54,6 +57,7 @@
     ElRow,
     ElTable,
     ElTableColumn,
+    ElScrollbar,
   } from 'element-plus';
 
   import {
@@ -73,6 +77,7 @@
       ElInput,
       ElCol,
       ElButton,
+      ElScrollbar,
     },
     setup() {
       let loading = ref(false);
@@ -110,6 +115,17 @@
             workout.loading = false;
           });
       };
+      const tableHeight = computed(() => {
+        let body = document.body;
+        let html = document.documentElement;
+
+        let height = Math.max(
+          body.scrollHeight, body.offsetHeight,
+          html.clientHeight, html.scrollHeight, html.offsetHeight,
+        );
+
+        return `${height - 230}px`;
+      });
 
       return {
         workouts: workouts,
@@ -119,6 +135,7 @@
         tableRowClassName,
         handleCurrentChange,
         handleWorkoutDone,
+        tableHeight,
       };
     },
   };
@@ -133,6 +150,7 @@
   cursor: pointer;
   border-radius: 25px;
 }
+
 th {
   color: black;
 }
