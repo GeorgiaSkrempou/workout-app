@@ -31,7 +31,6 @@
     <el-row>
       <el-col>
         <el-scrollbar
-          :height='tableHeight'
           :native='false'
         >
           <el-table
