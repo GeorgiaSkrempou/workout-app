@@ -116,7 +116,6 @@
     >
       <el-form>
         <el-form-item
-          :label-width='formLabelWidth'
           label='Weight'>
           <el-input
             v-model='weight'
