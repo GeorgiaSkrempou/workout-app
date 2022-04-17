@@ -1,5 +1,5 @@
 # workout-app
-Backend of a web app used to keep track of a workouts plan.  
+A web app used to keep track of a workouts plan.  
 
 Made using Flask and SQLite.  
 
