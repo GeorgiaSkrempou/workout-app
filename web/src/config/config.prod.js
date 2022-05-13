@@ -1,4 +1,4 @@
-const baseURL = 'http://api.workouts.pi/';
+const baseURL = '';
 
 export {
   baseURL,
